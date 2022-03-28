@@ -6,7 +6,6 @@ function PlayerCount() {
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    console.log(players);
   };
 
   return (
@@ -18,6 +17,8 @@ function PlayerCount() {
             type='number'
             value={players}
             onChange={(e) => setPlayers(Number(e.target.value))}
+            min='1'
+            max='5'
           />
         </label>
         <input type='submit' name='submit' />
