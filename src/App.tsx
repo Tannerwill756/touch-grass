@@ -4,7 +4,7 @@ import './App.css';
 
 function App() {
   const [player, setPlayer] = useState<string>('');
-  const [totalPlayers, setTotalPlayers] = useState<Array<string>>([]);
+  var [totalPlayers, setTotalPlayers] = useState<Array<string>>([]);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -16,6 +16,11 @@ function App() {
     setPlayer('');
   };
 
+  const removePlayer = (player: React.MouseEvent<HTMLButtonElement>) => {
+    // var fuckThis = totalPlayers.filter(p => p !== player);
+    console.log(player)
+  }
+ 
   const createScorecard = () => {
     setIsSubmitted(true);
     console.log(totalPlayers);
@@ -30,7 +35,10 @@ function App() {
         </label>
         <button onClick={addPlayer}>Add Player</button>
         {totalPlayers.map((p) => (
-          <p>{p}</p>
+          <div>
+            <p>{p}</p>
+            <button onClick={removePlayer(p)}>Remove Player</button>
+          </div>
         ))}
         <br />
         <button onClick={createScorecard}>Create Scorecard</button>
