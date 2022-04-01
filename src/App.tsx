@@ -16,11 +16,13 @@ function App() {
     setPlayer('');
   };
 
-  const removePlayer = (player: React.MouseEvent<HTMLButtonElement>) => {
-    // var fuckThis = totalPlayers.filter(p => p !== player);
-    console.log(player)
-  }
- 
+  const removePlayer = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const button: HTMLButtonElement = event.currentTarget;
+    console.log(button.name);
+    var newTotalPlayerArray = totalPlayers.filter((p) => p !== button.name);
+    setTotalPlayers(newTotalPlayerArray);
+  };
+
   const createScorecard = () => {
     setIsSubmitted(true);
     console.log(totalPlayers);
@@ -34,10 +36,12 @@ function App() {
           <input type='string' value={player} onChange={handleChange} />
         </label>
         <button onClick={addPlayer}>Add Player</button>
-        {totalPlayers.map((p) => (
-          <div>
+        {totalPlayers.map((p, key) => (
+          <div key={key}>
             <p>{p}</p>
-            <button onClick={removePlayer(p)}>Remove Player</button>
+            <button onClick={removePlayer} name={p}>
+              Remove Player
+            </button>
           </div>
         ))}
         <br />
