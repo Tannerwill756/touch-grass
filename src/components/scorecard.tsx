@@ -1,59 +1,70 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../App.css';
 
 interface Props {
   players: Array<string>;
 }
 
-const Scorecard = ({ players }: Props) => {
-  function buildCard() {
-    return players.map((player, key) => (
-      <div key={key}>
-        <p>{player}</p>
-        <table>
-          <thead>
-            <tr>
-              <th>Hole #</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>1</th>
-              <th>
-                <input />
-              </th>
-            </tr>
-            <tr>
-              <th>2</th>
-              <th>
-                <input />
-              </th>
-            </tr>
-            <tr>
-              <th>3</th>
-              <th>
-                <input />
-              </th>
-            </tr>
-            <tr>
-              <th>4</th>
-              <th>
-                <input />
-              </th>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    ));
-  }
+const testPlayers = [
+  {
+    name: 'timmy',
+    hole: [
+      {
+        hole: 1,
+        score: 4,
+      },
+      {
+        hole: 2,
+        score: 2,
+      },
+    ],
+  },
+  {
+    name: 'john',
+    hole: [
+      {
+        hole: 1,
+        score: 5,
+      },
+      {
+        hole: 2,
+        score: 3,
+      },
+    ],
+  },
+];
 
-  return (
-    <div className='Scorecard'>
-      <h1>Score Cards</h1>
-      {buildCard()}
-    </div>
-  );
+const Scorecard = ({ players }: Props) => {
+  const buildCard = () => {
+    return (
+      <div className='scorecard'>
+        <div id='hole1' className='cardContainer'>
+          <h2>hole 1</h2>
+          {testPlayers.map((player, key) => {
+            return (
+              <div key={key}>
+                <span>{player.name}</span>{' '}
+                <input value={player.hole[0].score} type='number' />
+              </div>
+            );
+          })}
+        </div>
+        <div id='hole2' className='cardContainer'>
+          <h2>hole 2</h2>
+          {testPlayers.map((player, key) => {
+            return (
+              <div key={key}>
+                <span>{player.name}</span>{' '}
+                <input value={player.hole[1].score} type='number' />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  return <div></div>;
 };
 
 export default Scorecard;

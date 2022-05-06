@@ -1,11 +1,12 @@
 import React, { ChangeEvent, useState } from 'react';
+import DisplayCardPage from '../components/DisplayCard';
 import Scorecard from '../components/scorecard';
 
 export interface IHomePageProps {}
 
 const CreateCard: React.FunctionComponent<IHomePageProps> = (props) => {
   const [player, setPlayer] = useState<string>('');
-  var [totalPlayers, setTotalPlayers] = useState<Array<string>>([]);
+  var [playersArray, setPlayersArray] = useState<Array<string>>([]);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -13,19 +14,19 @@ const CreateCard: React.FunctionComponent<IHomePageProps> = (props) => {
   };
 
   const addPlayer = () => {
-    setTotalPlayers([...totalPlayers, player]);
+    setPlayersArray([...playersArray, player]);
     setPlayer('');
   };
 
   const removePlayer = (event: React.MouseEvent<HTMLButtonElement>) => {
     const button: HTMLButtonElement = event.currentTarget;
-    var newTotalPlayerArray = totalPlayers.filter((p) => p !== button.name);
-    setTotalPlayers(newTotalPlayerArray);
+    var newTotalPlayerArray = playersArray.filter((p) => p !== button.name);
+    setPlayersArray(newTotalPlayerArray);
   };
 
   const createScorecard = () => {
     setIsSubmitted(true);
-    console.log(totalPlayers);
+    console.log(playersArray);
   };
 
   return (
@@ -36,18 +37,19 @@ const CreateCard: React.FunctionComponent<IHomePageProps> = (props) => {
           <input type='string' value={player} onChange={handleChange} />
         </label>
         <button onClick={addPlayer}>Add Player</button>
-        {totalPlayers.map((p, key) => (
+        {playersArray.map((person, key) => (
           <div key={key}>
-            <p>{p}</p>
-            <button onClick={removePlayer} name={p}>
+            <p>{person}</p>
+            <button onClick={removePlayer} name={person}>
               Remove Player
             </button>
           </div>
         ))}
         <br />
+
         <button onClick={createScorecard}>Create Scorecard</button>
       </div>
-      <div>{isSubmitted ? <Scorecard players={totalPlayers} /> : ''}</div>
+      <div>{isSubmitted ? <DisplayCardPage players={playersArray} /> : ''}</div>
     </div>
   );
 };
