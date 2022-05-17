@@ -34,7 +34,19 @@ const RegisterSchema = Yup.object().shape({
 
 const RegisterPage: React.FunctionComponent<IRegisterPageProps> = (props) => {
   const handleSubmit = (values: FormValues): void => {
-    alert(JSON.stringify(values));
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: values.username,
+        password: values.password,
+        address: values.address,
+      }),
+    };
+
+    fetch('http://localhost:9090/users/createUser', requestOptions)
+      .then((response) => response.json())
+      .then((data) => console.log(data));
   };
 
   return (

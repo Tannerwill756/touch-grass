@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import '../App.css';
 
 interface Props {
-  players: Array<string>;
+  players: Array<String>;
+  scores: Array<Object>;
 }
 
 const testPlayers = [
@@ -34,37 +35,23 @@ const testPlayers = [
   },
 ];
 
-const Scorecard = ({ players }: Props) => {
-  const buildCard = () => {
-    return (
-      <div className='scorecard'>
-        <div id='hole1' className='cardContainer'>
-          <h2>hole 1</h2>
-          {testPlayers.map((player, key) => {
-            return (
-              <div key={key}>
-                <span>{player.name}</span>{' '}
-                <input value={player.hole[0].score} type='number' />
-              </div>
-            );
-          })}
-        </div>
-        <div id='hole2' className='cardContainer'>
-          <h2>hole 2</h2>
-          {testPlayers.map((player, key) => {
-            return (
-              <div key={key}>
-                <span>{player.name}</span>{' '}
-                <input value={player.hole[1].score} type='number' />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
-
-  return <div></div>;
+const Scorecard = ({ scores }: Props) => {
+  console.log(scores);
+  return (
+    <>
+      {/* {scores.map((obj, key) => {
+        <div className='scorecard'>
+          <div id='hole1' className='cardContainer'>
+            <h2>hole 1</h2>
+            <div>
+              <span>{Object.keys(obj)}</span>
+              <input type='number' />
+            </div>
+          </div>
+        </div>;
+      })} */}
+    </>
+  );
 };
 
 export default Scorecard;
