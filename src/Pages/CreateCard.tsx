@@ -1,7 +1,7 @@
+import axios from 'axios';
 import React, { ChangeEvent, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import DisplayCardPage from '../components/DisplayCard';
-import Scorecard from '../components/scorecard';
+import { ScoreBuilder } from '../components/HelperFunctions';
 
 export interface IHomePageProps {}
 
@@ -18,17 +18,18 @@ const CreateCard: React.FunctionComponent<IHomePageProps> = (props) => {
   };
 
   const addPlayer = () => {
-    fetch(`http://localhost:9090/users/getUserByUsername/${player}`).then(
-      (response) => {
-        if (response.status === 200 && !playersArray.includes(player)) {
+    axios
+      .get(`http://localhost:9090/users/getUserByUsername/${player}`)
+      .then((res) => {
+        if (res.status === 200 && !playersArray.includes(player)) {
           setPlayerValidation(true);
           setPlayersArray([...playersArray, player]);
           setPlayer('');
         } else {
           setPlayerValidation(false);
         }
-      },
-    );
+      })
+      .catch(() => setPlayerValidation(false));
   };
 
   const removePlayer = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -37,66 +38,20 @@ const CreateCard: React.FunctionComponent<IHomePageProps> = (props) => {
     setPlayersArray(newTotalPlayerArray);
   };
 
-  const scoreBuilder = (holes: number, players: Array<String>) => {
-    let scoreObj: Object = {};
-    players.map((player: any) => {
-      if (holes == 9) {
-        const newObj = new Object({
-          hole1: 0,
-          hole2: 0,
-          hole3: 0,
-          hole4: 0,
-          hole5: 0,
-          hole6: 0,
-          hole7: 0,
-          hole8: 0,
-          hole9: 0,
-        });
-        scoreObj = { ...scoreObj, [player]: newObj };
-      } else {
-        const newObj = new Object({
-          hole1: 0,
-          hole2: 0,
-          hole3: 0,
-          hole4: 0,
-          hole5: 0,
-          hole6: 0,
-          hole7: 0,
-          hole8: 0,
-          hole9: 0,
-          hole10: 0,
-          hole11: 0,
-          hole12: 0,
-          hole13: 0,
-          hole14: 0,
-          hole15: 0,
-          hole16: 0,
-          hole17: 0,
-          hole18: 0,
-        });
-        scoreObj = { ...scoreObj, [player]: newObj };
-      }
-    });
-    return scoreObj;
-  };
-
   const createScorecard = () => {
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        numHoles: numHoles,
-        pricePerHole: price,
-        players: playersArray,
-        scores: scoreBuilder(numHoles, playersArray),
-      }),
+    const playerObj = {
+      numHoles: numHoles,
+      pricePerHole: price,
+      players: playersArray,
+      scores: ScoreBuilder(numHoles, playersArray),
     };
-    fetch('http://localhost:9090/scorecards/createScorecard', requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        localStorage.setItem('scorecard-id', data.card._id);
+    axios
+      .post('http://localhost:9090/scorecards/createScorecard/', playerObj)
+      .then((res) => {
+        console.log(res);
+        localStorage.setItem('scorecard-id', res.data.card._id);
+        navigate('/scorecard');
       });
-    navigate('/scorecard');
   };
 
   return (

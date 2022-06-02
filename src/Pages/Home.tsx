@@ -6,17 +6,9 @@ export interface IHomePageProps {}
 const HomePage: React.FunctionComponent<IHomePageProps> = (props) => {
   const [numHoles, setNumHoles] = useState('18');
   const [price, setPrice] = useState('');
-  let navigate = useNavigate();
-
-  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   const roundInfo = { numHoles, price };
-  //   console.log(roundInfo);
-  //   navigate('/createcard');
-  // };
 
   return (
-    <div className='Home'>
+    <div className='Home' style={{ textAlign: 'center' }}>
       <header>
         <h1>Touch Grass</h1>
       </header>
@@ -37,6 +29,8 @@ const HomePage: React.FunctionComponent<IHomePageProps> = (props) => {
       <Link to='/createcard' state={{ numHoles, price }}>
         Next Step
       </Link>
+      <br />
+      <br />
       {numHoles} <br />
       {price}
     </div>
