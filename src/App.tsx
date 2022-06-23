@@ -17,7 +17,7 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/createcard' element={<CreateCard />} />
-        <Route path='/scorecard' element={<Scorecard />} />
+        <Route path='/scorecards/:scorecardId' element={<Scorecard />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { ChangeEvent, useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 import { ScoreBuilder } from '../components/HelperFunctions';
 
 export interface IHomePageProps {}
@@ -17,7 +18,8 @@ const CreateCard: React.FunctionComponent<IHomePageProps> = (props) => {
     setPlayer(e.target.value);
   };
 
-  const addPlayer = () => {
+  const addPlayer = async () => {
+    // API call to see if user is in database
     axios
       .get(`http://localhost:9090/users/getUserByUsername/${player}`)
       .then((res) => {
@@ -42,15 +44,14 @@ const CreateCard: React.FunctionComponent<IHomePageProps> = (props) => {
     const playerObj = {
       numHoles: numHoles,
       pricePerHole: price,
+      isFinished: false,
       players: playersArray,
       scores: ScoreBuilder(numHoles, playersArray),
     };
     axios
       .post('http://localhost:9090/scorecards/createScorecard/', playerObj)
       .then((res) => {
-        console.log(res);
-        localStorage.setItem('scorecard-id', res.data.card._id);
-        navigate('/scorecard');
+        navigate(`/scorecards/${res.data.card._id}`);
       });
   };
 
