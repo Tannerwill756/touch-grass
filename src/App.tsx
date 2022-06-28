@@ -6,6 +6,7 @@ import './App.css';
 import RegisterPage from './Pages/register';
 import LoginPage from './Pages/login';
 import Scorecard from './Pages/Scorecard';
+import Results from './Pages/Results';
 
 export interface IApplicationProps {}
 
@@ -18,6 +19,7 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
         <Route path='/login' element={<LoginPage />} />
         <Route path='/createcard' element={<CreateCard />} />
         <Route path='/scorecards/:scorecardId' element={<Scorecard />} />
+        <Route path='/scorecards/:scorecardId/results' element={<Results />} />
       </Routes>
     </BrowserRouter>
   );

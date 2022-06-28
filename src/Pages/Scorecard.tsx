@@ -1,12 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { ScoreComparer } from '../components/HelperFunctions';
-export interface IScorecardProps {}
+import { useParams, useNavigate } from 'react-router-dom';
 
-interface results {
-  [name: string]: number;
-}
+export interface IScorecardProps {}
 
 const Scorecard = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -16,9 +12,9 @@ const Scorecard = () => {
   const [selectedHole, setSelectedHole] = useState<number>(1);
   const [changeEvent, setChangeEvent] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [finalResults, setFinalResults] = useState<results>({});
   const [isError, setIsError] = useState<boolean>(false);
   const { scorecardId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -116,42 +112,22 @@ const Scorecard = () => {
   };
 
   const submitRound = async () => {
+    // Gets array of all the scores
     let scoresArr = Object.values(scores);
+    // Checking if there aren't any scores missed
     scoresArr.map(async (obj) => {
       if (Object.values(obj).includes(0)) {
         setIsError(true);
       } else {
+        // if no scores missed
+        // setting scorecardIsFinished to true
         const response = await patchRequest(true);
         if (response.request.status === 201) {
           setIsError(false);
-          const results = await ScoreComparer(scores, valPerHole, numHoles);
-          setFinalResults(results);
           setIsSubmitted(true);
-          const patchObj = {};
-
-          // Updates totalEarnings stat in user's DB
-          try {
-            Object.keys(results).map(async (player) => {
-              const response = await axios.get(
-                `http://localhost:9090/users/getUserByUsername/${player}`,
-              );
-              const id = response.data.id;
-              console.log('user id', id);
-              const dbEarnings = response.data.totalEarnings;
-              console.log('earnings from db', dbEarnings);
-              console.log('earnings from round,', results[player]);
-              const patchObj = {
-                totalEarnings: dbEarnings + results[player],
-              };
-              const patchResponse = await axios.patch(
-                `http://localhost:9090/users/updateUser/${id}`,
-                patchObj,
-              );
-              console.log(patchResponse);
-            });
-          } catch (error) {
-            throw error;
-          }
+          setTimeout(() => {
+            navigate(`/scorecards/${scorecardId}/results`);
+          }, 1000);
         }
       }
     });
@@ -179,13 +155,6 @@ const Scorecard = () => {
             <h2 style={{ color: 'green' }}>
               Scorecard successfully submitted!
             </h2>
-            {Object.keys(finalResults).map((player, i) => {
-              return (
-                <p key={`result${i}`}>
-                  <b>{player}</b>: ${finalResults[player]}
-                </p>
-              );
-            })}
           </div>
         )}
       </div>
