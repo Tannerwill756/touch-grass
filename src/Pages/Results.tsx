@@ -26,9 +26,9 @@ const Results = () => {
       });
   }, []);
 
+  // Gets called when isFetching is false
   const getResults = () => {
     let results: any = [];
-    // console.log(results);
     let playerElement = Object.keys(finalResults).map((player, i) => {
       return (
         <div key={`result${i}`}>
@@ -37,7 +37,6 @@ const Results = () => {
       );
     });
     results.push(playerElement);
-    // console.log(finalResults);
     return results;
   };
 

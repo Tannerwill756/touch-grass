@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Button from '@material-ui/core/Button';
@@ -14,6 +15,11 @@ interface FormValues {
   passwordConfirm: string;
 }
 
+interface LoginReturnObject{
+  status: string,
+  user: string
+}
+
 const initialValues: FormValues = {
   username: '',
   address: '',
@@ -27,19 +33,17 @@ const RegisterSchema = Yup.object().shape({
 });
 
 const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
-  const handleSubmit = (values: FormValues): void => {
-    const requestOptions = {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: values.username,
-        password: values.password,
-      }),
+  const handleSubmit = (values: FormValues) => {
+    console.log('top of handle submit')
+    const userObj = {
+      username: values.username,
+      password: values.password,
     };
+    
+    console.log('before login call')
+    axios.post('http://localhost:9090/auth/login', userObj)
+    .then(res => {console.log('INSIDE login call')})
 
-    fetch('http://localhost:9090/users/createUser', requestOptions)
-      .then((response) => response.json())
-      .then((data) => console.log(data));
   };
 
   return (

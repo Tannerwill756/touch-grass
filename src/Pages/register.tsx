@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Button from '@material-ui/core/Button';
 
 import FormikField from '../components/FormikField';
+import axios from 'axios';
 
 export interface IRegisterPageProps {}
 
@@ -33,20 +34,23 @@ const RegisterSchema = Yup.object().shape({
 });
 
 const RegisterPage: React.FunctionComponent<IRegisterPageProps> = (props) => {
+  const [validUsername, setValidUsername] = useState<boolean>(true);
   const handleSubmit = (values: FormValues): void => {
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: values.username,
-        password: values.password,
-        address: values.address,
-      }),
+    const userObj = {
+      username: values.username,
+      password: values.password,
+      address: values.address,
     };
+    
 
-    fetch('http://localhost:9090/users/createUser', requestOptions)
-      .then((response) => response.json())
-      .then((data) => console.log(data));
+    axios.post('http://localhost:9090/auth/register', userObj)
+    .then((res) => {
+      if(res.status === 201){
+        setValidUsername(true);
+        console.log("success");
+      }})
+    .catch(err => err.response.status === 404 && setValidUsername(false))
+    
   };
 
   return (
@@ -66,7 +70,7 @@ const RegisterPage: React.FunctionComponent<IRegisterPageProps> = (props) => {
                 name='username'
                 required
               />
-
+              {!validUsername && <p>Username already taken.</p>}
               <FormikField
                 type='input'
                 label='Polygon Wallet Address'
