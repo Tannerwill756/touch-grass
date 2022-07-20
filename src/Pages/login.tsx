@@ -1,8 +1,10 @@
-import React from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from '../api/index';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Button from '@material-ui/core/Button';
+import useAuth from '../hooks/useAuth';
 
 import FormikField from '../components/FormikField';
 
@@ -33,21 +35,38 @@ const RegisterSchema = Yup.object().shape({
 });
 
 const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
+  const {setAuth} = useAuth();
+  const [errMessage, setErrMessage] = useState<string>('')
+  const [loginSuccess, setLoginSuccess] = useState<boolean>(false);
+  const navigate = useNavigate();
+
   const handleSubmit = (values: FormValues) => {
-    console.log('top of handle submit')
     const userObj = {
       username: values.username,
       password: values.password,
     };
     
-    console.log('before login call')
-    axios.post('http://localhost:9090/auth/login', userObj)
-    .then(res => {console.log('INSIDE login call')})
+    axios.post('/auth/login', userObj, {
+      headers: { 'Content-Type': 'application/json'},
+      withCredentials: true
+    })
+    .then(res => {
+      setErrMessage('');
+      setLoginSuccess(true);
+      console.log(res);
+      const access_token = res.data.access_token;
+      const username = values.username;
+      const password = values.password;
+      setAuth({ username, password, access_token});
+      navigate(`/`);
+
+    })
+    .catch(err => console.log(err))
 
   };
 
   return (
-    <div className='Login'>
+    <div className='Login' style={{width: "50%", margin: "0 auto"}}>
       <h1>Login</h1>
       <Formik
         initialValues={initialValues}
@@ -70,7 +89,8 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
                 name='password'
                 required
               />
-
+              <p style={{color: "red"}}>{errMessage}</p>
+              {loginSuccess && <p style={{color: "green"}}>Login Success</p>}
               <Button
                 variant='contained'
                 color='primary'
