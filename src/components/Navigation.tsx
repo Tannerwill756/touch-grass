@@ -1,24 +1,18 @@
 import React from 'react';
-import axios from 'axios';
-import useRefreshToken from '../hooks/useRefreshToken';
+import useLogout from '../hooks/useLogout';
+import { useNavigate } from 'react-router-dom';
 
 const Navigation = () => {
-    const refresh = useRefreshToken();
+  const navigate = useNavigate();
+  const logout = useLogout();
 
-    const handleLogout = () => {
-        axios
-      .delete(`http://localhost:9090/auth/session`, {
-        withCredentials: true,
-      })
-      .then((res) => console.log(res.data))
-      .catch((error) => console.log(error));
-    }
-
-
+  const signOut = async () => {
+    await logout();
+    navigate('/login')
+  }
 
     return <>
-    <button onClick={() => refresh()}>refresh</button>
-    <button onClick={handleLogout}>Sign out</button>
+    <button onClick={signOut}>Sign out</button>
     </>
     
 }
