@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import Button from '@material-ui/core/Button';
 
 import FormikField from '../components/FormikField';
-import axios from 'axios';
+import axios from '../api/index';
 
 export interface IRegisterPageProps {}
 
@@ -43,7 +43,7 @@ const RegisterPage: React.FunctionComponent<IRegisterPageProps> = (props) => {
     };
     
 
-    axios.post('http://localhost:9090/auth/register', userObj)
+    axios.post('/auth/register', userObj)
     .then((res) => {
       if(res.status === 201){
         setValidUsername(true);

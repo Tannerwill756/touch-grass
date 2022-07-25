@@ -58,7 +58,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = (props) => {
       const username = values.username;
       const password = values.password;
       setAuth({ username, password, access_token});
-      navigate(`/`);
+      navigate(`/dashboard`);
 
     })
     .catch(err => console.log(err))

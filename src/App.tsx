@@ -1,10 +1,11 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './App.css';
 import RequireAuth from './components/RequireAuth';
 import PersistLogin from './components/PersistLogin';
-import HomePage from './Pages/Home';
+import Dashboard from './Pages/Dashboard';
 import CreateCard from './Pages/CreateCard';
-import './App.css';
+import Home from './Pages/Home'
 import RegisterPage from './Pages/register';
 import LoginPage from './Pages/login';
 import Scorecard from './Pages/Scorecard';
@@ -19,11 +20,12 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
         {/* Public Routes */}
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/login' element={<LoginPage />} />
+        <Route path='/' element={<Home />} />
 
         {/* Protected Routes */}
         <Route element={<PersistLogin />}>
           <Route element={<RequireAuth /> }>
-            <Route path='/' element={<HomePage />} />
+            <Route path='/dashboard' element={<Dashboard />} />
           </Route>
         </Route>
         

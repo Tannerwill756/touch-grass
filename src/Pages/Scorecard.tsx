@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../api/index';
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ const Scorecard = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:9090/scorecards/getScorecard/${scorecardId}`)
+      .get(`/scorecards/getScorecard/${scorecardId}`)
       .then((res) => {
         if (!res.data.isFinished) {
           const data = res.data;
@@ -67,7 +67,7 @@ const Scorecard = () => {
     };
     try {
       const response = await axios.patch(
-        `http://localhost:9090/scorecards/updateScorecard/${scorecardId}`,
+        `/scorecards/updateScorecard/${scorecardId}`,
         patchObj,
       );
       return response;

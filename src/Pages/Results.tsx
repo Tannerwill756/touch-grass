@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../api/index';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ScoreComparer } from '../components/HelperFunctions';
@@ -15,7 +15,7 @@ const Results = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:9090/scorecards/getScorecard/${scorecardId}`)
+      .get(`/scorecards/getScorecard/${scorecardId}`)
       .then((res) => {
         const data = res.data.card;
 
@@ -40,31 +40,6 @@ const Results = () => {
     return results;
   };
 
-  // const updateUserStats = () => {
-  //     // Updates totalEarnings stat in user's DB
-  //     try {
-  //         Object.keys(results).map(async (player) => {
-  //           const response = await axios.get(
-  //             `http://localhost:9090/users/getUserByUsername/${player}`,
-  //           );
-  //           const id = response.data.id;
-  //           console.log('user id', id);
-  //           const dbEarnings = response.data.totalEarnings;
-  //           console.log('earnings from db', dbEarnings);
-  //           console.log('earnings from round,', results[player]);
-  //           const patchObj = {
-  //             totalEarnings: dbEarnings + results[player],
-  //           };
-  //           const patchResponse = await axios.patch(
-  //             `http://localhost:9090/users/updateUser/${id}`,
-  //             patchObj,
-  //           );
-  //           console.log(patchResponse);
-  //         });
-  //       } catch (error) {
-  //         throw error;
-  //       }
-  // }
 
   return (
     <div>

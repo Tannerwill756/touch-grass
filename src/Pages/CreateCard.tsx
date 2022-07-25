@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../api/index'
 import React, { ChangeEvent, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -21,7 +21,7 @@ const CreateCard: React.FunctionComponent<IHomePageProps> = (props) => {
   const addPlayer = async () => {
     // API call to see if user is in database
     axios
-      .get(`http://localhost:9090/users/getUserByUsername/${player}`)
+      .get(`/users/getUserByUsername/${player}`)
       .then((res) => {
         if (res.status === 200 && !playersArray.includes(player)) {
           setPlayerValidation(true);
@@ -49,7 +49,7 @@ const CreateCard: React.FunctionComponent<IHomePageProps> = (props) => {
       scores: ScoreBuilder(numHoles, playersArray),
     };
     axios
-      .post('http://localhost:9090/scorecards/createScorecard/', playerObj)
+      .post('/scorecards/createScorecard/', playerObj)
       .then((res) => {
         navigate(`/scorecards/${res.data.card._id}`);
       });
