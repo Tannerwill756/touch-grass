@@ -20,14 +20,19 @@ const Scorecard = () => {
     axios
       .get(`/scorecards/getScorecard/${scorecardId}`)
       .then((res) => {
-        if (!res.data.isFinished) {
+        console.log("response",res)
+        if (res.data.card.status === "started") {
           const data = res.data;
           const dbScores = data.card.scores;
           setScores(dbScores);
           setValPerHole(data.card.pricePerHole);
           setNumHoles(data.card.numHoles);
           setIsLoading(false);
-        } else {
+        }else if (res.data.card.status === "created") {
+          navigate(`/accesscode/${scorecardId}`)
+        }else if (res.data.card.status === "finished") {
+          navigate(`/scorecards/${scorecardId}/results`);
+        }else {
           setIsSubmitted(true);
         }
       })
@@ -57,37 +62,19 @@ const Scorecard = () => {
         [targetHole]: Number(e.target.value),
       },
     }));
-    setChangeEvent(!changeEvent);
-  };
-
-  const patchRequest = async (submission: Boolean) => {
-    const patchObj = {
-      scores: scores,
-      isFinished: submission,
-    };
-    try {
-      const response = await axios.patch(
-        `/scorecards/updateScorecard/${scorecardId}`,
-        patchObj,
-      );
-      return response;
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  useEffect(() => {
-    patchRequest(false);
-  }, [changeEvent]);
+  }
 
   const cardBuilder = (hole: number) => {
     let itemList = [];
+    
     if (numHoles > 0) {
       for (let i = 1; i <= numHoles; i++) {
+
         itemList.push(
           <div id={`hole${i}`} className='cardContainer-item'>
+            {console.log("object keys console", scores)}
             <h2>hole {i}</h2>
-
+            
             {Object.keys(scores).map((name, key) => {
               let val = Number(Object.values(scores[name])[i - 1]);
 
@@ -107,7 +94,7 @@ const Scorecard = () => {
         );
       }
     }
-
+    
     return itemList[hole - 1];
   };
 
@@ -120,24 +107,34 @@ const Scorecard = () => {
         setIsError(true);
       } else {
         // if no scores missed
-        // setting scorecardIsFinished to true
-        const response = await patchRequest(true);
-        if (response.request.status === 201) {
+        const patchObj = {
+          "status": "finished"
+          }
+      axios.patch(
+          `/scorecards/updateScorecard/${scorecardId}`,
+          patchObj,
+        ).then(() => {
           setIsError(false);
           setIsSubmitted(true);
           setTimeout(() => {
             navigate(`/scorecards/${scorecardId}/results`);
           }, 1000);
-        }
+        })
+          
+        
       }
     });
   };
+
+  // if(scores === undefined){
+  //   return <>Loading...</>
+  // }
 
   return (
     <div className='DisplayCard'>
       <div className='Scorecard'>
         <h1>Score Card</h1>
-        {isLoading === false && isSubmitted === false ? (
+        {isLoading === false && scores && isSubmitted === false ? (
           <div className='cardContainer'>
             {cardBuilder(selectedHole)}
 

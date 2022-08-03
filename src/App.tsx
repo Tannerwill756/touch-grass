@@ -4,12 +4,13 @@ import './App.css';
 import RequireAuth from './components/RequireAuth';
 import PersistLogin from './components/PersistLogin';
 import Dashboard from './Pages/Dashboard';
-import CreateCard from './Pages/CreateCard';
 import Home from './Pages/Home'
 import RegisterPage from './Pages/register';
 import LoginPage from './Pages/login';
 import Scorecard from './Pages/Scorecard';
 import Results from './Pages/Results';
+import CreatorAccessCode from './Pages/CreatorAccessCode';
+import JoinAccessCode from './Pages/JoinAccessCode';
 
 export interface IApplicationProps {}
 
@@ -27,13 +28,23 @@ const App: React.FunctionComponent<IApplicationProps> = (props) => {
           <Route element={<RequireAuth /> }>
             <Route path='/dashboard' element={<Dashboard />} />
           </Route>
+          <Route element={<RequireAuth /> }>
+            <Route path='/dashboard/joincard' element={<JoinAccessCode />} />
+          </Route>
+          <Route element={<RequireAuth /> }>
+            <Route path='/accesscode/:scorecardId' element={<CreatorAccessCode />} />
+          </Route>
+          <Route element={<RequireAuth /> }>
+            <Route path='/scorecards/:scorecardId' element={<Scorecard />} />
+          </Route>
+          <Route element={<RequireAuth /> }>
+            <Route path='/scorecards/:scorecardId/results' element={<Results />} />
+          </Route>
         </Route>
         
         
         
-        <Route path='/createcard' element={<CreateCard />} />
-        <Route path='/scorecards/:scorecardId' element={<Scorecard />} />
-        <Route path='/scorecards/:scorecardId/results' element={<Results />} />
+        
       </Routes>
     </BrowserRouter>
   );
