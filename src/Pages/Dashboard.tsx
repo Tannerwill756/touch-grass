@@ -10,12 +10,6 @@ import CreateCard from './CreateCard';
 export interface IHomePageProps {}
 
 const HomePage: React.FunctionComponent<IHomePageProps> = (props) => {
-  
-  
-  
-
- 
-
 
 
   return (

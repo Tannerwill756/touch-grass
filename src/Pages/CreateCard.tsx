@@ -24,11 +24,11 @@ const CreateCard: React.FunctionComponent<IHomePageProps> = () => {
       numHoles: numHoles,
       pricePerHole: price,
       status: "created",
-      // players: [auth.username],
-      // scores: ScoreBuilder(numHoles, [auth.username]),
+      creator: auth.username,
       setNumberOfPlayers: numPlayers
     };
 
+    console.log("number of players sending", playerObj);
     axios
       .post('/scorecards/createScorecard/', playerObj)
       .then((res) => {  
@@ -69,7 +69,7 @@ const CreateCard: React.FunctionComponent<IHomePageProps> = () => {
         <br />
         <button disabled={btn} onClick={createScorecard}>Create Scorecard</button>
       </div>}
-      {stage === 2 && <PaypalComponent scorecardId={scorecardId} username={auth.username} numHoles={numHoles} creator={true}/>}
+      {stage === 2 && <PaypalComponent scorecardId={scorecardId} username={auth.username} numHoles={numHoles} creator={true} numPlayers={numPlayers} price={price} userId={auth.id}/>}
 
     </>
     

@@ -18,12 +18,10 @@ const Results = () => {
       .get(`/scorecards/getScorecard/${scorecardId}`)
       .then((res) => {
         const data = res.data.card;
-
-        setFinalResults(
-          ScoreComparer(data.scores, data.pricePerHole, data.numHoles),
-        );
+        setFinalResults(data.results);
         setisFetching(false);
       });
+
   }, []);
 
   // Gets called when isFetching is false
@@ -44,6 +42,7 @@ const Results = () => {
   return (
     <div>
       <h1>Results</h1>
+      <p>Payments sent out to the following users.</p>
       {!isFetching && getResults()}
     </div>
   );

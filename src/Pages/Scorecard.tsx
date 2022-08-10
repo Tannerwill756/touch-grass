@@ -1,11 +1,17 @@
 import axios from '../api/index';
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
+import { RemoveScorecardID } from '../components/HelperFunctions';
 
 export interface IScorecardProps {}
 
 const Scorecard = () => {
+  const {auth} = useAuth();
+  const { scorecardId } = useParams();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [disableInput, setDisableInput] = useState(true);
   const [scores, setScores] = useState<{ [key: string]: any }>({});
   const [numHoles, setNumHoles] = useState<number>(0);
   const [valPerHole, setValPerHole] = useState<number>(0);
@@ -13,8 +19,8 @@ const Scorecard = () => {
   const [changeEvent, setChangeEvent] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
-  const { scorecardId } = useParams();
-  const navigate = useNavigate();
+  
+  
 
   useEffect(() => {
     axios
@@ -24,6 +30,7 @@ const Scorecard = () => {
         if (res.data.card.status === "started") {
           const data = res.data;
           const dbScores = data.card.scores;
+          if(data.card.creator === auth.username) setDisableInput(false);
           setScores(dbScores);
           setValPerHole(data.card.pricePerHole);
           setNumHoles(data.card.numHoles);
@@ -72,7 +79,6 @@ const Scorecard = () => {
 
         itemList.push(
           <div id={`hole${i}`} className='cardContainer-item'>
-            {console.log("object keys console", scores)}
             <h2>hole {i}</h2>
             
             {Object.keys(scores).map((name, key) => {
@@ -86,6 +92,7 @@ const Scorecard = () => {
                     value={val}
                     onChange={changeHandler}
                     type='number'
+                    disabled={disableInput}
                   />
                 </div>
               );
@@ -99,36 +106,41 @@ const Scorecard = () => {
   };
 
   const submitRound = async () => {
+    console.log("SUBMITING ROUND")
     // Gets array of all the scores
     let scoresArr = Object.values(scores);
-    // Checking if there aren't any scores missed
-    scoresArr.map(async (obj) => {
-      if (Object.values(obj).includes(0)) {
-        setIsError(true);
-      } else {
-        // if no scores missed
-        const patchObj = {
-          "status": "finished"
-          }
-      axios.patch(
-          `/scorecards/updateScorecard/${scorecardId}`,
-          patchObj,
-        ).then(() => {
-          setIsError(false);
-          setIsSubmitted(true);
-          setTimeout(() => {
-            navigate(`/scorecards/${scorecardId}/results`);
-          }, 1000);
-        })
-          
-        
+    for (const obj of scoresArr ) {
+      if (Object.values(obj).includes(0)){
+        return setIsError(true);
       }
-    });
+    }
+
+    const patchObj = {
+            "status": "finished",
+            "scores": scores
+            }
+            console.log("SUBMITING SCORECARD")    
+        // submitting scores
+        axios.patch(
+            `/scorecards/updateScorecard/${scorecardId}`,
+            patchObj,
+            ).then(() => {
+              // sending payout to winners
+              console.log("SUBMITING PAYPAL PAYMENTS")
+              axios.post(`/paypal/payout/${scorecardId}`)
+              .then(res => {
+                console.log("successfulll payout")
+                setIsError(false);
+                setIsSubmitted(true);
+                setTimeout(() => {
+                  navigate(`/scorecards/${scorecardId}/results`);
+                }, 1000);
+              }).catch(err=> console.log("payout post req error",err))
+            }).catch(err=> console.log("patch scorecard req error",err))
+            // removes scorecard from users active scorecards
+            RemoveScorecardID(scores, scorecardId);
   };
 
-  // if(scores === undefined){
-  //   return <>Loading...</>
-  // }
 
   return (
     <div className='DisplayCard'>
@@ -139,7 +151,6 @@ const Scorecard = () => {
             {cardBuilder(selectedHole)}
 
             {buttonBuilder()}
-
             <button onClick={() => submitRound()}>Finish Round</button>
           </div>
         ) : null}

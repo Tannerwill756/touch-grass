@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from '../api/index'
+import axios from '../api/index';
+import useAuth from '../hooks/useAuth';
 
 type Props = {}
 
 const CreatorAccessCode = (props: Props) => {
+    const {auth} = useAuth();
+    const [disableInput, setDisableInput] = useState(true);
     const { scorecardId } = useParams();
     const navigate = useNavigate();
     const [currentPlayers, setCurrentPlayers] = useState([]);
-    const [code, setCode] = useState<string>('')
+    const [code, setCode] = useState<string>('');
 
     useEffect(() =>{
         axios.get(`/scorecards/getScorecard/${scorecardId}`)
-        .then(res => {console.log(res); setCode(res.data.card.accessCode); setCurrentPlayers(res.data.card.players)})
+        .then(res => {
+          if(res.data.card.creator === auth.username) setDisableInput(false); 
+          if(res.data.card.status === "started") navigate(`/scorecards/${scorecardId}`);
+          setCode(res.data.card.accessCode); 
+          setCurrentPlayers(res.data.card.players)
+        })
         .catch(err => console.log(err))
     }, [])
 
@@ -35,7 +43,7 @@ const CreatorAccessCode = (props: Props) => {
         <h2>Access Code: {code}</h2>
         <p>Current Card: {currentPlayers.map((player, i) => {return <span key={i}>{player}</span>})}</p>
         <p>Everybody joined in?</p>
-        <button onClick={handleSubmit} disabled={currentPlayers.length < 2}>Start Round</button>
+        <button disabled={disableInput} onClick={handleSubmit} >Start Round</button>
     </div>
   )
 }

@@ -10,9 +10,11 @@ const JoinAccessCode = (props: Props) => {
     const [code, setCode] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [stage, setstage] = useState<number>(0);
-    const [players, setPlayers] = useState<Array<string>>([])
+    const [players, setPlayers] = useState<Array<string>>([]);
     const [scorecardId, setScorecardId] = useState<string>("");
     const [numHoles, setNumHoles] = useState<number>(0);
+    const [numPlayers, setNumPlayers] = useState<number>(0);
+    const [price, setPrice] = useState<string>('');
 
 
     const handleSubmit = () => {
@@ -20,11 +22,13 @@ const JoinAccessCode = (props: Props) => {
         axios.get(`/scorecards/GetScorecardByCode/${code}`)
             .then(res => {
                 console.log(res)
-                if(res.status === 200 && res.data.card.status === "started"){
+                if(res.status === 200 && res.data.card.status === "created"){
                     setError("");
                     setScorecardId(res.data.card._id);
                     setNumHoles(res.data.card.numHoles);
-                    setPlayers([...res.data.card.players])
+                    setPlayers([...res.data.card.players]);
+                    setNumPlayers(res.data.card.setNumberOfPlayers);
+                    setPrice(res.data.card.pricePerHole);
                     setstage(1);
                 }else{
                     setError("Uh oh looks like that round has already started")
@@ -56,7 +60,7 @@ const JoinAccessCode = (props: Props) => {
         </div>}
 
         {stage === 2 &&
-            <PaypalComponent scorecardId={scorecardId} username={auth.username} numHoles={numHoles} creator={false} />
+            <PaypalComponent scorecardId={scorecardId} username={auth.username} numHoles={numHoles} creator={false} numPlayers={numPlayers} price={price} userId={auth.id}/>
         }
     </div>
   )

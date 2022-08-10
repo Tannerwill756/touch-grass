@@ -12,18 +12,20 @@ import { useNavigate } from 'react-router-dom';
 dotenv.config();
 
 // This values are the props in the UI
-const amount = "10.00";
+
 const currency = "USD";
 const style = { layout: "vertical" };
-const clientID = process.env.REACT_APP_PAYPAL_SANDBOX_CLIENT_ID;
+const clientID = process.env.REACT_APP_PAYPAL_CLIENT_ID;
 
 // Custom component to wrap the PayPalButtons and handle currency changes
-const ButtonWrapper = ({ currency, showSpinner, scorecardId, username, numHoles, creator }) => {
+const ButtonWrapper = ({ currency, showSpinner, scorecardId, username, numHoles, creator, amount, userId }) => {
   // usePayPalScriptReducer can be use only inside children of PayPalScriptProviders
   // This is the main reason to wrap the PayPalButtons in a new component
   const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
   const navigate = useNavigate();
 
+  amount = parseFloat(amount).toFixed(2);
+  
   useEffect(() => {
     dispatch({
       type: "resetOptions",
@@ -66,8 +68,7 @@ const ButtonWrapper = ({ currency, showSpinner, scorecardId, username, numHoles,
         onApprove={function (data, actions) {
           return actions.order.capture().then(function (info) {
             // Your code here after capture the order
-            console.log("transaction completed", info);
-            AddPlayerToCard(scorecardId, username, numHoles);
+            AddPlayerToCard(scorecardId, username, numHoles, userId);
             if(creator){
               navigate(`/accesscode/${scorecardId}`);
             }else{
@@ -81,7 +82,8 @@ const ButtonWrapper = ({ currency, showSpinner, scorecardId, username, numHoles,
   );
 };
 
-export default function PaypalComponent({scorecardId, username, numHoles, creator}) {
+export default function PaypalComponent({scorecardId, username, numHoles, creator, numPlayers, price, userId}) {
+  const amount = String ((price * numHoles) / numPlayers);
   return (
     <div style={{ maxWidth: "750px", minHeight: "200px" }}>
       <PayPalScriptProvider
@@ -92,7 +94,7 @@ export default function PaypalComponent({scorecardId, username, numHoles, creato
           currency: "USD"
         }}
       >
-        <ButtonWrapper currency={currency} showSpinner={false} scorecardId={scorecardId} username={username} numHoles={numHoles} creator={creator} />
+        <ButtonWrapper currency={currency} showSpinner={false} scorecardId={scorecardId} username={username} numHoles={numHoles} creator={creator} amount={amount} userId={userId}/>
       </PayPalScriptProvider>
     </div>
   );

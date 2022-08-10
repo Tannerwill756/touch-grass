@@ -50,7 +50,6 @@ const RegisterPage: React.FunctionComponent<IRegisterPageProps> = (props) => {
         console.log("success");
       }})
     .catch(err => err.response.status === 404 && setValidUsername(false))
-    
   };
 
   return (
@@ -73,13 +72,12 @@ const RegisterPage: React.FunctionComponent<IRegisterPageProps> = (props) => {
               {!validUsername && <p>Username already taken.</p>}
               <FormikField
                 type='input'
-                label='Polygon Wallet Address'
+                label='PayPal Email Address'
                 name='address'
                 required
               />
               <p>
-                *ATTENTION: Make sure this is your Polygon Wallet Address, this
-                is how Touch Grass will be paying out winnings to players.
+                *ATTENTION: Make sure this is your email attached to your paypal account otherwise you won't reciever your money.
               </p>
 
               <FormikField
