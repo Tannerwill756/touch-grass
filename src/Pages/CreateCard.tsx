@@ -73,7 +73,6 @@ const CreateCard: React.FunctionComponent<IHomePageProps> = () => {
 
     </>
     
-    
   );
 };
 

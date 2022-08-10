@@ -15,7 +15,6 @@ const HomePage: React.FunctionComponent<IHomePageProps> = (props) => {
   return (
     <div className='Home' style={{ textAlign: 'center' }}>
       <Navigation />
-      
       <CreateCard />
 
     </div>
