@@ -119,26 +119,26 @@ const Scorecard = () => {
             "status": "finished",
             "scores": scores
             }
-            console.log("SUBMITING SCORECARD")    
-        // submitting scores
-        axios.patch(
-            `/scorecards/updateScorecard/${scorecardId}`,
-            patchObj,
-            ).then(() => {
-              // sending payout to winners
-              console.log("SUBMITING PAYPAL PAYMENTS")
-              axios.post(`/paypal/payout/${scorecardId}`)
-              .then(res => {
-                console.log("successfulll payout")
-                setIsError(false);
-                setIsSubmitted(true);
-                setTimeout(() => {
-                  navigate(`/scorecards/${scorecardId}/results`);
-                }, 1000);
-              }).catch(err=> console.log("payout post req error",err))
-            }).catch(err=> console.log("patch scorecard req error",err))
-            // removes scorecard from users active scorecards
-            RemoveScorecardID(scores, scorecardId);
+ 
+    // submitting scores
+    axios.patch(
+        `/scorecards/updateScorecard/${scorecardId}`,
+        patchObj,
+        ).then(() => {
+          // sending payout to winners
+          console.log("SUBMITING PAYPAL PAYMENTS")
+          axios.post(`/paypal/payout/${scorecardId}`)
+          .then(() => {
+            console.log("successfulll payout")
+            setIsError(false);
+            setIsSubmitted(true);
+            setTimeout(() => {
+              navigate(`/scorecards/${scorecardId}/results`);
+            }, 1000);
+          }).catch(err=> console.log("payout post req error",err))
+        }).catch(err=> console.log("patch scorecard req error",err))
+        // removes scorecard from users active scorecards
+        RemoveScorecardID(scores, scorecardId);
   };
 
 
