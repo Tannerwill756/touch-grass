@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import axios from '../api/index'
+import { axiosPrivate } from '../api/index'
 import PaypalComponent from '../components/PaypalComponent';
 import useAuth from '../hooks/useAuth';
 
@@ -19,7 +19,7 @@ const JoinAccessCode = (props: Props) => {
 
     const handleSubmit = () => {
         // looks for scorecard with the accescode entered in
-        axios.get(`/scorecards/GetScorecardByCode/${code}`)
+        axiosPrivate.get(`/scorecards/GetScorecardByCode/${code}`)
             .then(res => {
                 console.log(res)
                 if(res.status === 200 && res.data.card.status === "created"){

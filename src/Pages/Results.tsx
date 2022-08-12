@@ -1,4 +1,4 @@
-import axios from '../api/index';
+import { axiosPrivate } from '../api/index';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ScoreComparer } from '../components/HelperFunctions';
@@ -14,7 +14,7 @@ const Results = () => {
   const [waitingForResults, setWaitingForResults] = useState<boolean>(true);
 
   useEffect(() => {
-    axios
+    axiosPrivate
       .get(`/scorecards/getScorecard/${scorecardId}`)
       .then((res) => {
         const data = res.data.card;

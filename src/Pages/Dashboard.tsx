@@ -1,9 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import Navigation from '../components/Navigation';
-import useAuth from '../hooks/useAuth';
-import axios from '../api/index'
-import { ScoreBuilder } from '../components/HelperFunctions';
 import CreateCard from './CreateCard';
 
 

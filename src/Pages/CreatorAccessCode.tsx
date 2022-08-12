@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from '../api/index';
+import { axiosPrivate } from '../api/index';
 import useAuth from '../hooks/useAuth';
 
 type Props = {}
@@ -14,7 +14,7 @@ const CreatorAccessCode = (props: Props) => {
     const [code, setCode] = useState<string>('');
 
     useEffect(() =>{
-        axios.get(`/scorecards/getScorecard/${scorecardId}`)
+      axiosPrivate.get(`/scorecards/getScorecard/${scorecardId}`)
         .then(res => {
           if(res.data.card.creator === auth.username) setDisableInput(false); 
           if(res.data.card.status === "started") navigate(`/scorecards/${scorecardId}`);
@@ -29,7 +29,7 @@ const CreatorAccessCode = (props: Props) => {
         const patchObj = {
             "status": "started"
         }
-        axios.patch(
+        axiosPrivate.patch(
             `/scorecards/updateScorecard/${scorecardId}`,
             patchObj,
           ).then(() => 

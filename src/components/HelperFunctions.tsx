@@ -1,4 +1,4 @@
-import axios from "../api/index";
+import { axiosPrivate } from "../api/index";
 
 const ScoreBuilder = (holes: number, players: Array<String>) => {
   let scoreObj: Object = {};
@@ -129,12 +129,12 @@ const ScoreComparer = (
 const RemoveScorecardID = (scores:any, scorecardId:any) => {
   const users = Object.keys(scores);
   users.forEach(username => {    
-    axios.get(`users/getUserByUsername/${username}`).then((res) => {
+    axiosPrivate.get(`users/getUserByUsername/${username}`).then((res) => {
       let updateActiveScorecard = {
         activeScorecards: [...res.data.activeScorecards]
       }
       updateActiveScorecard.activeScorecards = updateActiveScorecard.activeScorecards.filter(id => id !== scorecardId);
-      axios.patch(`/users/updateUser/${res.data.id}`, updateActiveScorecard);
+      axiosPrivate.patch(`/users/updateUser/${res.data.id}`, updateActiveScorecard);
     })
   })
   

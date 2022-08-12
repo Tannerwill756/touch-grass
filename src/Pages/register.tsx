@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 
 import FormikField from '../components/FormikField';
 import axios from '../api/index';
+import { useNavigate } from 'react-router-dom';
 
 export interface IRegisterPageProps {}
 
@@ -35,6 +36,7 @@ const RegisterSchema = Yup.object().shape({
 
 const RegisterPage: React.FunctionComponent<IRegisterPageProps> = (props) => {
   const [validUsername, setValidUsername] = useState<boolean>(true);
+  const navigate = useNavigate();
   const handleSubmit = (values: FormValues): void => {
     const userObj = {
       username: values.username,
@@ -47,7 +49,7 @@ const RegisterPage: React.FunctionComponent<IRegisterPageProps> = (props) => {
     .then((res) => {
       if(res.status === 201){
         setValidUsername(true);
-        console.log("success");
+        navigate(`/login`);
       }})
     .catch(err => err.response.status === 404 && setValidUsername(false))
   };

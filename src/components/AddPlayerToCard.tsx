@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { ScoreBuilder } from './HelperFunctions';
-import axios from '../api/index'
+import { axiosPrivate } from '../api/index'
 
 const AddPlayerToCard = async (scorecardId:string, username:string, numHoles:number, userId:string) => {
     let scores = {};
@@ -8,8 +8,7 @@ const AddPlayerToCard = async (scorecardId:string, username:string, numHoles:num
 
     const newScores = ScoreBuilder(numHoles, [username])
 
-    
-      await axios.get(`/scorecards/getScorecard/${scorecardId}`)
+    await axiosPrivate.get(`/scorecards/getScorecard/${scorecardId}`)
         .then(res => {
           // If the card already has 1 person in it
           if(res.data.card.players.length >= 1){
@@ -21,12 +20,8 @@ const AddPlayerToCard = async (scorecardId:string, username:string, numHoles:num
               scores: newScoreObject
             };
             // Integrate new players with current scorecard 
-            axios
-            .patch(`/scorecards/updateScorecard/${scorecardId}`, playerObj)
-            .then((res) => {       
-              console.log(res);
-              
-            });
+            axiosPrivate
+            .patch(`/scorecards/updateScorecard/${scorecardId}`, playerObj);          
 
           }else{
             // If the card is being created for the first time
@@ -34,25 +29,20 @@ const AddPlayerToCard = async (scorecardId:string, username:string, numHoles:num
               players: [username],
               scores: ScoreBuilder(numHoles, [username])
             };
-            axios
-            .patch(`/scorecards/updateScorecard/${scorecardId}`, playerObj)
-            .then((res) => {       
-              console.log(res);
-              
-            });
+            axiosPrivate
+            .patch(`/scorecards/updateScorecard/${scorecardId}`, playerObj);
           }
+
           // Add's scorecard id to the users 'activescorecards' array in their db profile
-          
-          axios.get(`/users/getUser/${userId}`).then(res => {
+          axiosPrivate.get(`/users/getUser/${userId}`).then(res => {
             const updateActiveScorecard = {
-              activeScorecards: [...res.data.user.activeScorecards, scorecardId]
+              activeScorecards: [...res.data.activeScorecards, scorecardId]
             }
-            axios.patch(`/users/updateUser/${userId}`, updateActiveScorecard);
+            axiosPrivate.patch(`/users/updateUser/${userId}`, updateActiveScorecard);
           })
 
         }).catch(err => {
-            console.log(err)
-           
+            console.log(err)           
         });
 }
 

@@ -1,4 +1,4 @@
-import axios from '../api/index';
+import { axiosPrivate } from '../api/index';
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
@@ -23,10 +23,9 @@ const Scorecard = () => {
   
 
   useEffect(() => {
-    axios
+    axiosPrivate
       .get(`/scorecards/getScorecard/${scorecardId}`)
       .then((res) => {
-        console.log("response",res)
         if (res.data.card.status === "started") {
           const data = res.data;
           const dbScores = data.card.scores;
@@ -106,7 +105,6 @@ const Scorecard = () => {
   };
 
   const submitRound = async () => {
-    console.log("SUBMITING ROUND")
     // Gets array of all the scores
     let scoresArr = Object.values(scores);
     for (const obj of scoresArr ) {
@@ -119,17 +117,15 @@ const Scorecard = () => {
             "status": "finished",
             "scores": scores
             }
- 
+
     // submitting scores
-    axios.patch(
+    axiosPrivate.patch(
         `/scorecards/updateScorecard/${scorecardId}`,
         patchObj,
         ).then(() => {
           // sending payout to winners
-          console.log("SUBMITING PAYPAL PAYMENTS")
-          axios.post(`/paypal/payout/${scorecardId}`)
+          axiosPrivate.post(`/paypal/payout/${scorecardId}`)
           .then(() => {
-            console.log("successfulll payout")
             setIsError(false);
             setIsSubmitted(true);
             setTimeout(() => {

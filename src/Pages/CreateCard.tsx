@@ -1,4 +1,4 @@
-import axios from '../api/index'
+import { axiosPrivate } from '../api/index'
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
@@ -29,7 +29,7 @@ const CreateCard: React.FunctionComponent<IHomePageProps> = () => {
     };
 
     console.log("number of players sending", playerObj);
-    axios
+    axiosPrivate
       .post('/scorecards/createScorecard/', playerObj)
       .then((res) => {  
         setScorecardId(res.data.card._id);
